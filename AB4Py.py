@@ -69,14 +69,17 @@ def SearchPersonByName(addr_book: object, name: str) -> list:
     """
     Searching Person by string
     :param addr_book: object - reference to AddressBook
-    :param name: str - string for the searching
+    :param name: str - string for the searching, if you use predefine value “all_book” you get all contacts
     :return: list of the persons
     """
     res_persons = []
     persons = ABCopyArrayOfAllPeople(addr_book)
-    for per1 in persons:
-        if name in GetFullNamePerson(per1):
-            res_persons.append(per1)
+    if name == "all_book":
+        res_persons = persons[:]
+    else:
+        for per1 in persons:
+            if name in GetFullNamePerson(per1):
+                res_persons.append(per1)
     return res_persons
 
 
@@ -317,7 +320,7 @@ def main():
             print("Usage : AB4Py.py -[key]")
             print("        AB4Py.py -m information about login person")
             print("        AB4Py.py -f 'Name' searching person by name")
-            print("        AB4Py.py -a List of total contacts of your address book")
+            print("        AB4Py.py -a List of all contacts in your address book")
             print("        AB4Py.py -i 'csv.file' 'Organization' - import records to address book from .csv file")
             print("                    and setting organizations name for them")
             return 0
@@ -339,11 +342,21 @@ def main():
                 if book is None:
                     print("Access to the Address Book denied. Please check the rights of this application.")
                     return 0
-                persons = SearchPersonByName(book, s_name, )
+                persons = SearchPersonByName(book, s_name)
                 for per in persons:
                     print_person_date(per)
                 print(f'Total records: {len(persons)}.')
                 return 0
+        elif "-a" in sys.argv[1]:
+            book = ABGetSharedAddressBook()
+            if book is None:
+                print("Access to the Address Book denied. Please check the rights of this application.")
+                return 0
+            persons = SearchPersonByName(book, "all_book")
+            for per in persons:
+                print_person_date(per)
+            print(f'Total records: {len(persons)}.')
+            return 0
         elif "-i" in sys.argv[1]:
             if len(sys.argv) < 3:
                 print("File .csv is not signed.")
