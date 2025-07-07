@@ -319,10 +319,10 @@ def main():
         if "-h" in sys.argv[1]:
             print("Usage : AB4Py.py -[key]")
             print("        AB4Py.py -m information about login person")
-            print("        AB4Py.py -f 'Name' searching person by name")
+            print("        AB4Py.py -f 'Name' search for person by name")
             print("        AB4Py.py -a List of all contacts in your address book")
-            print("        AB4Py.py -i 'csv.file' 'Organization' - import records to address book from .csv file")
-            print("                    and setting organizations name for them")
+            print("        AB4Py.py -i 'csv.file' 'Organization' - import records to the address book from a .csv file")
+            print("                    with the company name specified in the “Organization” field")
             return 0
         elif "-m" in sys.argv[1]:
             book = ABGetSharedAddressBook()

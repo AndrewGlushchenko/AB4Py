@@ -3,7 +3,7 @@
 # AB4Py python module for working with MacOS/OS X Address Book
 
 ### Needed the Python to Objective-C bridge library PyObjC. 
-### Actual version 5.1.2 was released on 2018-12-13 
+### Actual version 11.1 was released on 2025-06-14 
 ### https://pyobjc.readthedocs.io/en/latest/index.html
 
 
@@ -13,9 +13,9 @@ Installing or upgrading PyObjC using pip is easy:
 
 =======
 
-This module was verified with python 2.7 and 3.6.  In the March 3, 2019 issue was added an adaptation for python 2.7, a version check of python, and a check of the accessing the MacOs address book result.
+Current version 1.01 dated July 6, 2025. This module has been tested with Python 3.7 and above. Support for Python 2.7 has been discontinued as obsolete.
 
-Special thanks to Vladimir Litovko and  Eugene Prusakov for testing, tips and support.
+I am still grateful to Vladimir Litovko and Eugene Prusakov for their help in testing the first version of this module.
 
 ### Using function from AddressBook module:
 
@@ -49,15 +49,15 @@ Create MultiValue record
 
 Template for address record
 
-    adr_tmpl['City'] = "Москва"
-    adr_tmpl['Country'] = 'Россия'
-    adr_tmpl['Street'] = "Тупик нечистой силы, 13"
-    adr_tmpl['ZIP'] = "123123"
+    adr_tmpl['Street'] = "435 N Michigan Ave"
+    adr_tmpl['City'] = "Chicago"
+    adr_tmpl['ZIP'] = "60001"
+    adr_tmpl['Country'] = 'USA'
 
 Insert element of MultiValue record
 
-    ABMultiValueInsert(emails,"glav@psih.ru", ad_label_work, 0, None)
-    ABMultiValueInsert(phones,"+7(985)999-99-99", ad_label_work, 0, None)
+    ABMultiValueInsert(emails,"j_dou@google.com", ad_label_work, 0, None)
+    ABMultiValueInsert(phones,"+1(555)555-12-34", ad_label_work, 0, None)
     ABMultiValueInsert(new_address,adr_tmpl, ad_label_work, 0, None)
 
 Add MultiValue record to the Personal record
@@ -77,6 +77,8 @@ Save address book
 
 ### Function in this module:
 
+The purpose and parameters of the functions are described in the module code.
+
     SearchPersonByName(Addr_book, Name)
     GetFullNamePerson(RefPerson)
     GetJobDataPerson(RefPerson)
@@ -95,9 +97,10 @@ Save address book
 ### You can use it as separete shell application
 
     Usage : AB4Py.py -[key]
-        -m information about login person
-        -f 'Name' searching person by name
-        -i 'csv.file' 'Organization' - import records to Address book from .csv file
-        and setting organsations name for them
+            AB4Py.py -m information about login person
+            AB4Py.py -f 'Name' search for person by name
+            AB4Py.py -a List of all contacts in your address book
+            AB4Py.py -i 'csv.file' 'Organization' - import records to the address book from a .csv file
+                        with the company name specified in the “Organization” field
         
-        Format of csv.file describs in the list header_file
+Format of csv.file describs in the value "header_file" in the module.
