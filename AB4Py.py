@@ -11,7 +11,6 @@
 from __future__ import annotations
 from AddressBook import *
 import sys
-import re
 import csv
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Any
@@ -48,7 +47,7 @@ ad_label_home = "_$!<Home>!$_"
 ad_label_workfax = "_$!<WorkFAX>!$_"
 ad_label_mobile = "_$!<Mobile>!$_"
 
-adr_tmpl = {'City': '', 'Country': '', 'CountryCode': 'RU', 'Street': '', 'ZIP': ''}
+adr_tmpl = {'City': '', 'Country': '', 'CountryCode': '', 'Street': '', 'ZIP': ''}
 
 
 def CheckVersion() -> bool:
@@ -131,7 +130,7 @@ def GetPhonesPerson(ref_person: ABPerson) -> list:
         for i in range(phones.count()):
             ph = []
             ss = ABMultiValueCopyLabelAtIndex(phones, i)
-            ph.append(ss[4:-4])
+            ph.append(ABLocalizedPropertyOrLabel(ss))
             ph.append(ABMultiValueCopyValueAtIndex(phones, i))
             ph_array.append(ph)
     return ph_array
@@ -151,7 +150,7 @@ def GetEmailsPerson(ref_person: ABPerson) -> list:
         for i in range(emails.count()):
             ph = []
             ss = ABMultiValueCopyLabelAtIndex(emails, i)
-            ph.append(ss[4:-4])
+            ph.append(ABLocalizedPropertyOrLabel(ss))
             ph.append(ABMultiValueCopyValueAtIndex(emails, i))
             ph_array.append(ph)
     return ph_array
@@ -165,15 +164,17 @@ def GetAddressesPerson(ref_person: ABPerson) -> list:
     :param ref_person: ABPerson - reference to person record
     :return: list of addresses and their labels
     """
+    nn: dict[str, str]
     adds = ABRecordCopyValue(ref_person, kABAddressProperty)
-    ph_array = []
+    ad_array = []
     for i in range(adds.count()):
-        ph = []
+        ad = []
         ss = ABMultiValueCopyLabelAtIndex(adds, i)
-        ph.append(ss[4:-4])
-        adr = (ABMultiValueCopyValueAtIndex(adds, i))
-        ph_array.append(str(adr)[1:-2])
-    return ph_array
+        ad.append(ABLocalizedPropertyOrLabel(ss))
+        nn = dict(ABMultiValueCopyValueAtIndex(adds, i))
+        ad.append('{} {} {} {} {} '.format(nn['Street'], nn['City'], nn['State'], nn['ZIP'], nn['Country']))
+        ad_array.append(ad)
+    return ad_array
 
 
 def SetNewPersonRecord(last_name: str, first_name='', middle_name='') -> Optional[ABPerson]:
@@ -241,7 +242,7 @@ def FormingPersonalRecord(record_ar: list, organization='') -> ABPerson:
     ln = record_ar[7].strip()
     ph_ar = ln.split(" ")
     for ph in ph_ar:
-        if not ABMultiValueInsert(phones, rus_phone_numb_norm(ph), ad_label_mobile, 0, None)[0]:
+        if not ABMultiValueInsert(phones, ph, ad_label_mobile, 0, None)[0]:
             return None
 
     ln = record_ar[8].strip()
@@ -278,26 +279,16 @@ def print_person_date(ref_person: ABPerson) -> None:
 
     phones = GetPhonesPerson(ref_person)
     for ln in range(len(phones)):
-        print(' {:<9} phone - {:<18}'.format(phones[ln][0], phones[ln][1]))
+        print('  {:<9} {:<18}'.format(phones[ln][0], phones[ln][1]))
 
     emails = GetEmailsPerson(ref_person)
     for ln in range(len(emails)):
-        print(' {:<9} e-mail - {:<18}'.format(emails[ln][0], emails[ln][1]))
+        print('  {:<9} - {:<18}'.format(emails[ln][0], emails[ln][1]))
+
+    addresses = GetAddressesPerson(ref_person)
+    for ln in range(len(addresses)):
+        print('{} \n  {}'.format(addresses[ln][0], addresses[ln][1]))
     print("")
-
-
-def rus_phone_numb_norm(ph_numb: str):
-    """
-    Phone number normalisation
-    :param ph_numb: str source phone number string
-    :return: str formatted phone number string
-    """
-
-    r0 = re.sub(r'\D', '', ph_numb)
-    if len(r0) > 11:
-        return '+7({0}){1}-{2}-{3};{4}'.format(r0[1:4], r0[4:7], r0[7:9], r0[9:11], r0[11:])
-    else:
-        return '+7({0}){1}-{2}-{3}'.format(r0[1:4], r0[4:7], r0[7:9], r0[9:11])
 
 
 # Header for .csv file

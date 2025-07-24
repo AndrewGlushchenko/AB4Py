@@ -13,8 +13,11 @@ Installing or upgrading PyObjC using pip is easy:
 
 =======
 
-Current version 1.01 dated July 6, 2025. This module has been tested with Python 3.7 and above. Support for Python 2.7 has been discontinued as obsolete.
+Current version 1.01 dated July 6, 2025. 
+Originally, the AB4Py module, developed in 2018, supported both Python 2 and Python 3. This was primarily due to the fact that Python 2 was the default version on macOS at the time. As a result, the version of AB4Py published on GitHub in 2019 supported both Python 2.7 and Python 3.6.
 
+Starting with macOS 10.15 (Catalina), released in 2019, Python 3 became the default instead of Python 2. In 2020, official support for Python 2.7 ended, and with macOS 12.3 (Monterey) in 2022, Apple removed Python 2.7 from the system entirely.
+Therefore, by the time this article was written, support for Python 2.7 had been completely removed from the module. Furthermore, the addition of type annotations in the module now limits its use to Python versions 3.7 and above.
 I am still grateful to Vladimir Litovko and Eugene Prusakov for their help in testing the first version of this module.
 
 ### Using function from AddressBook module:
@@ -24,10 +27,9 @@ Getting reference on Address Book
     book = ABGetSharedAddressBook()
     book = AddressBook.ABAddressBook.sharedAddressBook()
 
-Getting reference on Address Book
+Copying Address Book into a list
 
-    book = ABGetSharedAddressBook()
-    book = AddressBook.ABAddressBook.sharedAddressBook()
+    persons = ABCopyArrayOfAllPeople(addr_book)
 
 Getting reference on Login Person
 
@@ -40,6 +42,11 @@ Creating of new person record
 Get properties of persons record in accordance with key
 
     RefPerson.valueForProperty_(kABMiddleNameProperty)
+  
+    phones = ABRecordCopyValue(ABPerson, kABPhoneProperty)
+    phone = ABMultiValueCopyValueAtIndex(pnones, index)
+    phone_label = ABMultiValueCopyLabelAtIndex(pnones, index)
+    read_label = ABLocalizedPropertyOrLabel(phone_label)
 
 Create MultiValue record
 
@@ -51,6 +58,7 @@ Template for address record
 
     adr_tmpl['Street'] = "435 N Michigan Ave"
     adr_tmpl['City'] = "Chicago"
+    adr_tmpl['State'] = "Illinois"
     adr_tmpl['ZIP'] = "60001"
     adr_tmpl['Country'] = 'USA'
 
@@ -91,7 +99,6 @@ The purpose and parameters of the functions are described in the module code.
     FormingPersonalRecord(record_ar, Organization = '')
  
     print_person_date(RefPerson)
-    rus_phone_numb_norm(ph_numb)
 ==========
 
 ### You can use it as separete shell application
