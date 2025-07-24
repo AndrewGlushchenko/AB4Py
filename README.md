@@ -18,6 +18,7 @@ Originally, the AB4Py module, developed in 2018, supported both Python 2 and Pyt
 
 Starting with macOS 10.15 (Catalina), released in 2019, Python 3 became the default instead of Python 2. In 2020, official support for Python 2.7 ended, and with macOS 12.3 (Monterey) in 2022, Apple removed Python 2.7 from the system entirely.
 Therefore, by the time this article was written, support for Python 2.7 had been completely removed from the module. Furthermore, the addition of type annotations in the module now limits its use to Python versions 3.7 and above.
+
 I am still grateful to Vladimir Litovko and Eugene Prusakov for their help in testing the first version of this module.
 
 ### Using function from AddressBook module:
